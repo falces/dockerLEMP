@@ -1,0 +1,93 @@
+# docker-compose.yaml
+version: '3.5'
+
+services:
+
+  mysql:
+    image: mysql:8.0.27
+    command: --default-authentication-plugin=mysql_native_password
+    # command: --socket=/tmp/mysql.sock --default-authentication-plugin=mysql_native_password
+    volumes:
+        - "db_data:/var/lib/mysql"
+    environment:
+        - MYSQL_DATABASE=${MYSQL_DATABASE}
+        - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+        - MYSQL_USER=${MYSQL_USER}
+        - MYSQL_PASSWORD=${MYSQL_PASSWORD}
+    ports:
+        - "3306:3306"
+    container_name: ${MYSQL_HOST}
+    # restart: always
+    env_file:
+        - ".env"
+  # https://stackoverflow.com/questions/39175194/docker-compose-persistent-data-mysql
+  # https://stackoverflow.com/questions/63552052/docker-volumes-on-wsl2-using-docker-desktop
+  # https://stackoverflow.com/questions/65345516/docker-permission-denied-to-local-mysql-volume
+
+  web:
+    image: nginx:latest
+    container_name: 'nginx'
+    ports:
+      - '8000:80'
+    volumes:
+      - ./html:/var/www
+      - ./nginx/conf:/etc/nginx/conf.d
+    # env_file:
+    #   - '.env'
+    depends_on:
+      - 'php-fpm'
+      - 'mysql'
+    links:
+      - php-fpm
+    # networks:
+    #   api:
+    #     ipv4_address: 10.1.0.101
+    # extra_hosts:
+    #   - "api-gateway.local:10.1.0.101"
+    #   - "api-store.local:10.1.0.101"
+    command:
+      [nginx-debug, '-g', 'daemon off;']
+
+  php-fpm:
+    build:
+      dockerfile: php/Dockerfile
+      context: .
+    container_name: 'php-fpm'
+    volumes:
+      - ./html:/var/www
+      # - ./docker/php-fpm/php-dev.ini:/usr/local/etc/php/conf.d/php-dev.ini
+      # - ./docker/php-fpm/www.conf:/usr/local/etc/php-fpm.d/www.conf
+      # - /tmp/${APP_NAME}/php-fpm:/var/log/xdebug
+      # # - ./configs/ssh/config:/root/.ssh/config
+      # - ./configs/terminal/bash_aliases:/root/.bash_aliases
+      # - ./configs/terminal/zshrc:/root/.zshrc
+      # - ./configs/composer:/root/.composer
+    # env_file:
+    #   - '.env'
+    # networks:
+    #   api:
+    #     ipv4_address: 10.1.0.102
+    # extra_hosts:
+    #   - "api-gateway.local:10.1.0.101"
+    #   - "api-store.local:10.1.0.101"
+
+  portainer:
+    image: portainer/portainer
+    container_name: 'portainer'
+    ports:
+      - "9010:9000"
+    command: -H unix:///var/run/docker.sock
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /portainer/data:/data
+
+# networks:
+#   api:
+#     driver: bridge
+#     ipam:
+#       driver: default
+#       config:
+#         - subnet: 10.1.0.0/24
+
+volumes:
+  db_data:
