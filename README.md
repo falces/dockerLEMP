@@ -1,5 +1,4 @@
-# dockerLEMP
-## Descripción
+# Descripción
 
 Configuración de un docker local con los servicios:
 
@@ -11,7 +10,7 @@ Adicionalmente, para configuración del propio contenedor, se levantan las imág
 
 - Portainer
 
-## Ejecución
+# Ejecución
 
 Necesitaremos tener instalado y en ejecución Docker.
 
@@ -21,3 +20,12 @@ Para construir y levantar el contenedor, nos situamos en terminal dentro de la c
 $ docker-compose up --build
 ```
 
+# Configuración
+
+## Variables de entorno
+
+Se configuran en el archivo .env
+
+## Mac
+
+Para levantar el contenedor de MySQL en ordenadores Mac con procesador M1, se sobreescribe la plataforma del servicio mysql en el archivo docker-compose.override.yml

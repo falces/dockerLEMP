@@ -79,7 +79,7 @@ services:
     command: -H unix:///var/run/docker.sock
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
-      - /portainer/data:/data
+      - "portainer_data:/data"
 
 # networks:
 #   api:
@@ -91,3 +91,4 @@ services:
 
 volumes:
   db_data:
+  portainer_data:
