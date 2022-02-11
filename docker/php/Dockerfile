@@ -1,6 +1,5 @@
 FROM php:8.0.12-fpm
-# COPY ../html /usr/src
-# WORKDIR /usr/src
+
 WORKDIR /var/www
 
 
@@ -140,5 +139,7 @@ RUN docker-php-ext-install soap
 ENV TZ=Europe/Madrid
 
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
+
+COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
 RUN printf '[PHP]\ndate.timezone = "Europe/Madrid"\n' > /usr/local/etc/php/conf.d/tzone.ini
