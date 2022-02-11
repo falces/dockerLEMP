@@ -1,5 +1,6 @@
 # FROM php:7.4-fpm
-FROM php:8.0.12-fpm
+# FROM php:8.0.12-fpm
+FROM php:${PHP_VERSION}
 # COPY ../html /usr/src
 # WORKDIR /usr/src
 WORKDIR /var/www
