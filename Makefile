@@ -22,7 +22,7 @@ docker-start:
 	@cd docker; docker-compose up -d
 
 docker-build:
-	@cd docker; docker-compose up --build
+	@cd docker; docker-compose up --build -d
 
 docker-stop:
 	@cd docker; docker-compose down

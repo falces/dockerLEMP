@@ -47,7 +47,8 @@ services:
 
   php-fpm:
     container_name: ${PROJECT_PREFIX}${PHP_HOST}
-    build: ./php
+    build:
+      context: ./php
     volumes:
       - ../html:/var/www
       - ./php/php.ini:/usr/local/etc/php/conf.d/php.ini
