@@ -75,7 +75,7 @@ services:
     volumes:
       - /var/run.sock:/var/run.sock
       - "portainer_data:/data"
-  
+
   phpmyadmin:
     container_name: ${PROJECT_PREFIX}${PHPMYADMIN_HOST}
     image: phpmyadmin/phpmyadmin
