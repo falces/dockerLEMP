@@ -15,7 +15,7 @@ services:
         - MYSQL_USER=${MYSQL_USER}
         - MYSQL_PASSWORD=${MYSQL_PASSWORD}
     ports:
-        - "3306:3306"
+        - ${MYSQL_PORT}:3306
     container_name: ${PROJECT_PREFIX}${MYSQL_HOST}
     # restart: always
   # https://stackoverflow.com/questions/39175194-compose-persistent-data-mysql
@@ -28,7 +28,7 @@ services:
     ports:
       - ${PUBLIC_WEB_PORT}:80
     volumes:
-      - ../html:/var/www
+      - ../${APP_FOLDER}:/var/www
       - ./nginx/conf:/etc/nginx/conf.d
       - ./nginx/ssl:/etc/ssl
     depends_on:
@@ -50,7 +50,7 @@ services:
     build:
       context: ./php
     volumes:
-      - ../html:/var/www
+      - ../${APP_FOLDER}:/var/www
       - ./php/php.ini:/usr/local/etc/php/conf.d/php.ini
       # - ./php-fpm/php-dev.ini:/usr/local/etc/php/conf.d/php-dev.ini
       # - ./php-fpm/www.conf:/usr/local/etc/php-fpm.d/www.conf
@@ -70,17 +70,17 @@ services:
     image: portainer/portainer
     container_name: ${PROJECT_PREFIX}${PORTAINER_HOST}
     ports:
-      - "9010:9000"
+      - ${PORTAINER_PORT}:9000
     command: -H unix:///var/run.sock
     volumes:
       - /var/run.sock:/var/run.sock
       - "portainer_data:/data"
-  
+
   phpmyadmin:
     container_name: ${PROJECT_PREFIX}${PHPMYADMIN_HOST}
     image: phpmyadmin/phpmyadmin
     ports:
-        - "8080:80"
+        - ${PHPMYADMIN_PORT}:80
     environment:
         - PMA_ARBITRARY=1
         - PMA_HOST=${MYSQL_HOST}
